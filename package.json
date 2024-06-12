@@ -1,0 +1,51 @@
+{
+  "name": "department-bi",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "prepare": "husky install",
+    "commit": "git-cz"
+  },
+  "dependencies": {
+    "@unocss/reset": "^0.60.4",
+    "vue": "^3.4.21"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.4.4",
+    "@commitlint/config-conventional": "^18.4.4",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vitejs/plugin-vue-jsx": "^4.0.0",
+    "commitizen": "^4.3.0",
+    "cz-git": "^1.8.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-vue": "^9.20.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.2.4",
+    "pretty-quick": "^4.0.0",
+    "typescript": "^5.2.2",
+    "unocss": "^0.60.4",
+    "unplugin-auto-import": "^0.17.6",
+    "vite": "^5.2.0",
+    "vue-tsc": "^2.0.6"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,vue}": [
+      "eslint --cache --fix",
+      "prettier --write"
+    ],
+    "*.{css,md}": "prettier --write"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-git"
+    }
+  }
+}
