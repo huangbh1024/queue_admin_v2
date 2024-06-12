@@ -10,7 +10,7 @@ export default defineConfig({
     vue(),
     vueJsx({ transformOn: true, mergeProps: true, enableObjectSlots: true }),
     UnoCSS(),
-    AutoImport({ imports: ['vue', 'vue-router', 'pinia'] }),
+    AutoImport({ imports: ['vue', 'vue-router', 'pinia', '@vueuse/core'] }),
   ],
   base: './',
   resolve: {

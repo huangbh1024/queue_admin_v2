@@ -3,4 +3,5 @@ export interface UserInfo {
   userName: string;
   userPic: string;
   token: string;
+  roleList: Array<{ id: number; roleName: string }>;
 }
