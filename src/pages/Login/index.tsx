@@ -2,6 +2,7 @@ import { Transition } from 'vue';
 import { NEl } from 'naive-ui';
 import { SignIn } from './components';
 import loginBg from '@/assets/svgs/loginBg.svg';
+import { TransitionConstant } from '@/constants/transition.constant';
 
 export const LoginPage = defineComponent({
   setup() {
@@ -23,7 +24,7 @@ export const LoginPage = defineComponent({
               <div class='mb-4 text-3xl font-bold'>欢迎回来</div>
               <div class='mb-12 text-xl'>{import.meta.env.VITE_PROJECT_NAME}</div>
               <div>
-                <Transition mode='out-in' appear>
+                <Transition name={TransitionConstant.FADE_SLIDE} mode='out-in' appear>
                   {authFormMap[signType.value]}
                 </Transition>
               </div>
