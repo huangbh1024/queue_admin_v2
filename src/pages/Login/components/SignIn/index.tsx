@@ -1,17 +1,27 @@
-import { NForm, type FormRules, type FormInst, NFormItem, NInput, NCheckbox, NButton } from 'naive-ui';
+import { NForm, type FormRules, type FormInst, NFormItem, NInput, NCheckbox, NButton, useNotification } from 'naive-ui';
+import { useAuthStore } from '@/stores/modules/auth.store';
 
 export const SignIn = defineComponent({
   setup() {
+    const { loginMethod } = useAuthStore();
+    const router = useRouter();
+    const notification = useNotification();
+
     const rules = reactive<FormRules>({
       account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
       password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
     });
-    const model = reactive(JSON.parse(localStorage.getItem('SIGN_IN_INFO') ?? '{"account":"","password":""}'));
+    const model = reactive<{ account: string; password: string }>(
+      JSON.parse(localStorage.getItem('SIGN_IN_INFO') ?? '{"account":"","password":""}'),
+    );
     const formRef = ref<FormInst | null>(null);
     const onSubmit = () => {
-      formRef.value?.validate(error => {
+      formRef.value?.validate(async error => {
         if (error?.length) return;
         cacheSignInInfo();
+        await loginMethod({ userName: model.account, userPassword: model.password });
+        router.push({ path: '/dashboard' });
+        notification.success({ title: '温馨提醒', content: '登录成功', duration: 3000 });
       });
     };
 
@@ -22,6 +32,7 @@ export const SignIn = defineComponent({
       else localStorage.removeItem('SIGN_IN_INFO');
       localStorage.setItem('IS_REMEMBER', isRemember.value.toString());
     };
+
     return () => (
       <NForm ref={formRef} model={model} rules={rules}>
         <NFormItem label='账号' path='account'>
