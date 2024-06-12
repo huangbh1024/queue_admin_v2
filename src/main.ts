@@ -7,9 +7,11 @@ import './assets/styles/public.css';
 import './assets/styles/naive-override.css';
 
 import { setupRouter } from './routes';
+import { setupStore } from './stores';
 
 const initApp = () => {
   const app = createApp(App);
+  setupStore(app); // store加载
   setupRouter(app); // router加载
   app.mount('#app');
 };
