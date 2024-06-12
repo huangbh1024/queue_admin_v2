@@ -15,7 +15,7 @@ const themeOverrides: GlobalThemeOverrides = {
 export const App = defineComponent({
   setup() {
     return () => (
-      <NConfigProvider themeOverrides={themeOverrides} class='w-full h-full'>
+      <NConfigProvider themeOverrides={themeOverrides} class='w-full h-full' inlineThemeDisabled>
         <RouterView />
       </NConfigProvider>
     );
