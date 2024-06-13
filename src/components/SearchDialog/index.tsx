@@ -11,7 +11,7 @@ export const SearchDialog = defineComponent({
   setup() {
     const menuStore = useMenuStore();
     const router = useRouter();
-    const { roleMenuList, filteredRoutes } = storeToRefs(menuStore);
+    const { roleMenuList } = storeToRefs(menuStore);
 
     // 对roleMenuList进行处理，获取不是别人parent的数据
     const noParentMenuList = computed(() => getNonParentMenus(roleMenuList.value));
@@ -55,7 +55,7 @@ export const SearchDialog = defineComponent({
       whenever(EnterCMD, () => {
         const route = filterMenuList.value[activeItem.value];
         if (route) {
-          router.push({ path: resolvePath(filteredRoutes.value, route.menuUrl) });
+          router.push({ path: resolvePath(roleMenuList.value, route.menuUrl) });
           closeDialog();
         }
       });
@@ -93,7 +93,7 @@ export const SearchDialog = defineComponent({
       updateActiveItem(undefined, index);
       const item = filterMenuList.value[index];
       if (item) {
-        router.push({ path: resolvePath(filteredRoutes.value, item.menuUrl) });
+        router.push({ path: resolvePath(roleMenuList.value, item.menuUrl) });
         closeDialog();
       }
     };
