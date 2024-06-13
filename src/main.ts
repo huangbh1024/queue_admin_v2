@@ -5,6 +5,7 @@ import '@unocss/reset/sanitize/sanitize.css';
 import '@unocss/reset/sanitize/assets.css';
 import './assets/styles/public.css';
 import './assets/styles/naive-override.css';
+import './assets/styles/transition.css';
 
 import { setupRouter } from './routes';
 import { setupStore } from './stores';
