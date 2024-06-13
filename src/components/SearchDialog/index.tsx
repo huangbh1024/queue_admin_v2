@@ -4,9 +4,18 @@ import { Icon } from '../Icon';
 import { isWindows } from '@/utils/platformUtils';
 import { useSearchDialog } from '@/composables/useSearchDialog';
 import { VueHighlighter } from './utils';
+import { useMenuStore } from '@/stores/modules/menu.store';
+import { getNonParentMenus, resolvePath } from '@/utils/menuUtils';
 
 export const SearchDialog = defineComponent({
   setup() {
+    const menuStore = useMenuStore();
+    const router = useRouter();
+    const { roleMenuList, filteredRoutes } = storeToRefs(menuStore);
+
+    // 对roleMenuList进行处理，获取不是别人parent的数据
+    const noParentMenuList = computed(() => getNonParentMenus(roleMenuList.value));
+
     const isDialogVisible = ref(false);
     const SearchIcon = 'tabler:search';
     const CloseIcon = 'tabler:x';
@@ -43,7 +52,13 @@ export const SearchDialog = defineComponent({
       whenever(ActiveCMD, () => {
         openDialog();
       });
-      whenever(EnterCMD, () => {});
+      whenever(EnterCMD, () => {
+        const route = filterMenuList.value[activeItem.value];
+        if (route) {
+          router.push({ path: resolvePath(filteredRoutes.value, route.menuUrl) });
+          closeDialog();
+        }
+      });
       whenever(UpCMD, () => {
         updateActiveItem('up');
       });
@@ -52,39 +67,13 @@ export const SearchDialog = defineComponent({
       });
     });
 
-    const menuList = [
-      {
-        menuIcon: 'i-mdi-monitor-dashboard',
-        menuName: '仪表盘1',
-        menuType: '1',
-        menuUrl: '/dashboard/index',
-        parentId: 0,
-        id: 1,
-      },
-      {
-        menuIcon: 'i-mdi-monitor-dashboard',
-        menuName: '仪表盘2',
-        menuType: '1',
-        menuUrl: '/dashboard/index',
-        parentId: 0,
-        id: 2,
-      },
-      {
-        menuIcon: 'i-mdi-monitor-dashboard',
-        menuName: '仪表盘3',
-        menuType: '1',
-        menuUrl: '/dashboard/index',
-        parentId: 0,
-        id: 3,
-      },
-    ];
     const activeItem = ref(-1);
     const updateActiveItem = (type?: 'up' | 'down', index?: number) => {
       if (index !== undefined) {
         activeItem.value = index;
         return;
       }
-      const length = menuList.length;
+      const length = noParentMenuList.value.length;
       if (type === 'up') {
         if (activeItem.value <= 0) {
           activeItem.value = length - 1;
@@ -100,15 +89,23 @@ export const SearchDialog = defineComponent({
         }
       }
     };
+    const onClickItem = (index: number) => {
+      updateActiveItem(undefined, index);
+      const item = filterMenuList.value[index];
+      if (item) {
+        router.push({ path: resolvePath(filteredRoutes.value, item.menuUrl) });
+        closeDialog();
+      }
+    };
 
     const searchKey = ref('');
     const keywords = computed<string[]>(() => searchKey.value.split(' ').filter(k => k));
 
     const filterMenuList = computed(() => {
       if (keywords.value.length === 0) {
-        return menuList;
+        return noParentMenuList.value;
       }
-      return menuList.filter(item => {
+      return noParentMenuList.value.filter(item => {
         const titleMatch = keywords.value.some(k => item.menuName.includes(k));
         return titleMatch;
       });
@@ -156,7 +153,7 @@ export const SearchDialog = defineComponent({
                             'flex items-center my-2',
                             activeItem.value === index && styles['active'],
                           ]}
-                          onClick={() => updateActiveItem(undefined, index)}
+                          onClick={() => onClickItem(index)}
                         >
                           <NEl class={styles['icon']}>
                             <Icon size={18} name='i-mdi-monitor-dashboard' />

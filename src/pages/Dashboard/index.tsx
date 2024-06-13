@@ -1,5 +1,7 @@
+import { PageWrapper } from '@/components/PageWrapper';
+
 export const DashboardPage = defineComponent({
   setup() {
-    return () => <div>DashboardPage</div>;
+    return () => <PageWrapper>Dashboard</PageWrapper>;
   },
 });

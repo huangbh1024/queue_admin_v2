@@ -1,8 +1,10 @@
 import { NMenu } from 'naive-ui';
-import { mockMenuList, dataToTree } from '@/utils/menuUtils';
-import { RouterLink, useRoute } from 'vue-router';
+import { RouteRecordRaw, RouterLink, useRoute } from 'vue-router';
 import { renderIcon } from '@/components/Icon/utils';
+import { useMenuStore } from '@/stores/modules/menu.store';
 import type { MenuMixedOption } from 'naive-ui/es/menu/src/interface';
+import { isUndefined } from 'lodash-es';
+import { resolvePath } from '@/utils/menuUtils';
 
 export interface SidebarMenuProps {
   collapsed?: boolean;
@@ -16,28 +18,53 @@ export const SidebarMenu = defineComponent({
   },
   setup(props) {
     const { collapsed, mode } = toRefs(props);
+    const { filteredRoutes, roleMenuList } = storeToRefs(useMenuStore());
     const collapsedWidth = computed(() => (collapsed.value ? 64 : 300));
-    const menus = computed(() => dataToTree(mockMenuList));
-    type Menu = typeof menus.value;
+    // 是否展示子菜单
+    const showChildren = (item: RouteRecordRaw) =>
+      item.children?.length && (isUndefined(item.meta?.hasChildren) || item.meta?.hasChildren);
+
     // 处理树形菜单
-    const mapTreeStructure = (item: Menu[0]): MenuMixedOption => {
+    const mapTreeStructure = (item: RouteRecordRaw): MenuMixedOption => {
       return {
         label: () => {
-          if (item.children?.length) {
-            return item.menuName;
+          if (showChildren(item)) {
+            return item.meta?.title ?? '';
           }
-          return <RouterLink to={item.menuUrl}>{{ default: () => item.menuName }}</RouterLink>;
+          return (
+            <RouterLink to={resolvePath(roleMenuList.value, item.path)}>
+              {{ default: () => item.meta?.title ?? '' }}
+            </RouterLink>
+          );
         },
-        key: item.menuUrl,
-        collapseTitle: item.menuName,
-        icon: item.menuIcon ? renderIcon(item.menuIcon) : undefined,
-        children: item.children?.length ? item.children.map(mapTreeStructure) : undefined,
+        key: resolvePath(roleMenuList.value, item.path),
+        collapseTitle: item.meta?.title ?? '',
+        icon: item.meta?.icon ? renderIcon(item.meta.icon) : undefined,
+        children: showChildren(item) ? item.children!.map(mapTreeStructure) : undefined,
       };
     };
 
-    const menuList = computed(() => menus.value.map(mapTreeStructure));
+    const menuList = computed(() => filteredRoutes.value.map(mapTreeStructure));
     const route = useRoute();
     const activeMenu = ref(route.path);
+    const expandedKeys = ref<string[]>([]);
+    const onUpdateActiveMenu = (key: string) => {
+      activeMenu.value = key;
+      // 切割
+      expandedKeys.value = key
+        .split('/')
+        .filter(item => item)
+        .slice(0, -1)
+        .map(item => {
+          const _path = resolvePath(roleMenuList.value, item);
+          return _path.startsWith('/') ? _path : '/' + _path;
+        });
+    };
+    const onUpdateExpandedKeys = (keys: string[]) => {
+      expandedKeys.value = keys;
+    };
+    watch(() => route.path, onUpdateActiveMenu, { immediate: true });
+
     return () => (
       <div
         class={[
@@ -51,12 +78,15 @@ export const SidebarMenu = defineComponent({
         ]}
       >
         <NMenu
-          v-model:value={activeMenu.value}
+          value={activeMenu.value}
+          onUpdateValue={onUpdateActiveMenu}
           collapsed={collapsed.value}
           collapsedWidth={collapsedWidth.value}
           options={menuList.value}
           mode={mode.value}
-        ></NMenu>
+          expandedKeys={expandedKeys.value}
+          onUpdateExpandedKeys={onUpdateExpandedKeys}
+        />
       </div>
     );
   },

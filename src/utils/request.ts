@@ -13,7 +13,16 @@ class HttpRequest {
   // 初始化拦截器
   initInterceptors() {
     // 请求拦截
-    this.axiosInstance.interceptors.request.use();
+    this.axiosInstance.interceptors.request.use(
+      config => {
+        config.headers.token = window.sessionStorage.getItem('token') ?? '';
+        return config;
+      },
+      error => {
+        NMessage.error('网络连接错误' + error);
+        return Promise.reject(error);
+      },
+    );
     // 响应拦截
     this.axiosInstance.interceptors.response.use(
       (res: AxiosResponse) => {
