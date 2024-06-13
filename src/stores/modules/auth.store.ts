@@ -1,7 +1,7 @@
-import API from '@/apis';
 import { UserInfo } from '@/types';
 import { Md5 } from 'ts-md5';
 import { useMenuStore } from './menu.store';
+import { login } from '@/apis/auth.api';
 
 export const useAuthStore = defineStore(
   'auth',
@@ -10,7 +10,7 @@ export const useAuthStore = defineStore(
     const token = computed(() => userInfo.value?.token ?? '');
     const loginMethod = async (loginInfo: { userName: string; userPassword: string }) => {
       const { queryMenu } = useMenuStore();
-      const { data } = await API.login({
+      const { data } = await login({
         userName: loginInfo.userName,
         userPassword: Md5.hashStr(loginInfo.userPassword),
       });
