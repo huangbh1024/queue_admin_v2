@@ -1,8 +1,8 @@
 import type { App } from 'vue';
 import { createRouter, createWebHashHistory } from 'vue-router';
-import { commonRoutes } from './modules/common.routes';
-import { asyncRoutes } from './modules/async.routes';
-import { constantRoutes } from './modules/constant.routes';
+import { commonRoutes } from './common.routes';
+import { asyncRoutes } from './async.routes';
+import { constantRoutes } from './constant.routes';
 
 export const setupRouter = (app: App<Element>) => {
   const router = createRouter({

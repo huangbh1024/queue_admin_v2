@@ -1,7 +1,7 @@
 import API from '@/apis';
 import { filterRoutes } from '@/utils/menuUtils';
-import { commonRoutes } from '@/routes/modules/common.routes';
-import { asyncRoutes } from '@/routes/modules/async.routes';
+import { commonRoutes } from '@/routes/common.routes';
+import { asyncRoutes } from '@/routes/async.routes';
 import { Menu } from '@/types';
 
 export const useMenuStore = defineStore(
