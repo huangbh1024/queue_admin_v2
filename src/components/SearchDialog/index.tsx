@@ -4,17 +4,17 @@ import { Icon } from '../Icon';
 import { isWindows } from '@/utils/platformUtils';
 import { useSearchDialog } from '@/composables/useSearchDialog';
 import { VueHighlighter } from './utils';
-import { useMenuStore } from '@/stores/modules/menu.store';
-import { getNonParentMenus, resolvePath } from '@/utils/menuUtils';
 
 export const SearchDialog = defineComponent({
   setup() {
-    const menuStore = useMenuStore();
     const router = useRouter();
-    const { roleMenuList } = storeToRefs(menuStore);
 
     // 对roleMenuList进行处理，获取不是别人parent的数据
-    const noParentMenuList = computed(() => getNonParentMenus(roleMenuList.value));
+    const noParentMenuList = computed(() =>
+      useRouter()
+        .getRoutes()
+        .filter(item => item.children.length === 0 && item.meta.title),
+    );
 
     const isDialogVisible = ref(false);
     const SearchIcon = 'tabler:search';
@@ -55,7 +55,7 @@ export const SearchDialog = defineComponent({
       whenever(EnterCMD, () => {
         const route = filterMenuList.value[activeItem.value];
         if (route) {
-          router.push({ path: resolvePath(roleMenuList.value, route.menuUrl) });
+          router.push({ path: route.path });
           closeDialog();
         }
       });
@@ -93,7 +93,7 @@ export const SearchDialog = defineComponent({
       updateActiveItem(undefined, index);
       const item = filterMenuList.value[index];
       if (item) {
-        router.push({ path: resolvePath(roleMenuList.value, item.menuUrl) });
+        router.push({ path: item.path });
         closeDialog();
       }
     };
@@ -106,7 +106,7 @@ export const SearchDialog = defineComponent({
         return noParentMenuList.value;
       }
       return noParentMenuList.value.filter(item => {
-        const titleMatch = keywords.value.some(k => item.menuName.includes(k));
+        const titleMatch = keywords.value.some(k => (item.meta?.title as string).includes(k));
         return titleMatch;
       });
     });
@@ -162,7 +162,7 @@ export const SearchDialog = defineComponent({
                             <VueHighlighter
                               highlightClassName='highlight'
                               autoEscape
-                              textToHighlight={item.menuName}
+                              textToHighlight={(item.meta?.title as string) ?? ''}
                               searchWords={keywords.value}
                             />
                           </div>

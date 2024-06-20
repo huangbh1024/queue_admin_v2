@@ -39,57 +39,34 @@ export const filterRoutes = (asyncRoutes: RouteRecordRaw[], roleMenuList: Menu[]
   return asyncRoutes.filter(updateRouteMeta);
 };
 
-export const resolvePath = (roleMenuList: Menu[], routePath: string): string => {
-  const parentPaths = findParentPaths(roleMenuList, routePath);
-  parentPaths.push(routePath);
-  return parentPaths.join('/');
-};
-
-// 寻找父级菜单路径
-export const findParentPaths = (roleMenuList: Menu[], targetPath: string): string[] => {
-  // 根据 menuUrl 找到对应的菜单项
-  const menus = roleMenuList.filter(item => item.menuUrl === targetPath);
-  if (menus.length === 0) return [];
-
-  // 初始化结果集合
-  const result: Menu[] = [];
-
-  // 定义递归函数
-  const findParents = (parentId: number) => {
-    // 找到父级菜单
-    const parentMenu = roleMenuList.find(item => item.id === parentId);
-    if (parentMenu) {
-      result.push(parentMenu);
-      if (parentMenu.parentId !== 0) {
-        findParents(parentMenu.parentId);
-      }
-    }
-  };
-
-  // 对每个找到的菜单项开始递归查找
+export interface ExtendedMenu extends Menu {
+  fullMenuUrl: string;
+  parentMenus: string[];
+}
+export const constructFullMenuUrls = (menus: Menu[]): ExtendedMenu[] => {
+  const menuMap: { [key: number]: Menu } = {};
   menus.forEach(menu => {
-    findParents(menu.parentId);
+    menuMap[menu.id] = menu;
   });
 
-  // 去重
-  const uniqueResult = Array.from(new Set(result.map(item => item.id))).map(id =>
-    result.find(item => item.id === id),
-  ) as Menu[];
-  return uniqueResult.sort((a, b) => a.menuLever - b.menuLever).map(item => item.menuUrl);
-};
-
-export const getNonParentMenus = (menuList: Menu[]) => {
-  const parentIds = new Set<number>();
-
-  // Collect all parentIds
-  for (const menuItem of menuList) {
-    if (menuItem.parentId) {
-      parentIds.add(menuItem.parentId);
+  const getFullMenuUrlAndParents = (menu: Menu): { fullUrl: string; parents: string[] } => {
+    if (menu.parentId === 0 || !menuMap[menu.parentId]) {
+      return { fullUrl: menu.menuUrl, parents: [] };
     }
-  }
+    const parentMenu = menuMap[menu.parentId];
+    const parentResult = getFullMenuUrlAndParents(parentMenu);
+    return {
+      fullUrl: `${parentResult.fullUrl}/${menu.menuUrl}`,
+      parents: [...parentResult.parents, parentResult.fullUrl],
+    };
+  };
 
-  // Filter out items that are parents
-  const nonParentMenus = menuList.filter(menuItem => !parentIds.has(menuItem.id));
-
-  return nonParentMenus;
+  return menus.map(menu => {
+    const { fullUrl, parents } = getFullMenuUrlAndParents(menu);
+    return {
+      ...menu,
+      fullMenuUrl: fullUrl,
+      parentMenus: parents,
+    };
+  });
 };
