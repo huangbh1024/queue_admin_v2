@@ -1,4 +1,10 @@
-import { NConfigProvider, NNotificationProvider, type GlobalThemeOverrides } from 'naive-ui';
+import {
+  NConfigProvider,
+  NDialogProvider,
+  NMessageProvider,
+  NNotificationProvider,
+  type GlobalThemeOverrides,
+} from 'naive-ui';
 import { RouterView } from 'vue-router';
 
 const themeOverrides: GlobalThemeOverrides = {
@@ -16,9 +22,13 @@ export const App = defineComponent({
   setup() {
     return () => (
       <NConfigProvider themeOverrides={themeOverrides} class='w-full h-full' inlineThemeDisabled>
-        <NNotificationProvider>
-          <RouterView />
-        </NNotificationProvider>
+        <NDialogProvider>
+          <NMessageProvider>
+            <NNotificationProvider>
+              <RouterView />
+            </NNotificationProvider>
+          </NMessageProvider>
+        </NDialogProvider>
       </NConfigProvider>
     );
   },
