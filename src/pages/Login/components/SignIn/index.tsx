@@ -5,6 +5,7 @@ export const SignIn = defineComponent({
   setup() {
     const { loginMethod } = useAuthStore();
     const router = useRouter();
+    const route = useRoute();
     const notification = useNotification();
 
     const rules = reactive<FormRules>({
@@ -20,7 +21,8 @@ export const SignIn = defineComponent({
         if (error?.length) return;
         cacheSignInInfo();
         await loginMethod({ userName: model.account, userPassword: model.password });
-        router.push({ path: '/dashboard' });
+        const { redirect } = route.query;
+        router.push({ path: (redirect as string) ?? '/dashboard' });
         notification.success({ title: '温馨提醒', content: '登录成功', duration: 3000 });
       });
     };
