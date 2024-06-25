@@ -1,8 +1,10 @@
 import type { App } from 'vue';
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { Router, createRouter, createWebHashHistory } from 'vue-router';
 import { commonRoutes } from './common.routes';
 import { asyncRoutes } from './async.routes';
 import { constantRoutes } from './constant.routes';
+
+export let globalRouter: Router | null = null;
 
 export const setupRouter = (app: App<Element>) => {
   const router = createRouter({
@@ -11,5 +13,6 @@ export const setupRouter = (app: App<Element>) => {
     scrollBehavior: () => ({ left: 0, top: 0 }),
     strict: true,
   });
+  globalRouter = router;
   app.use(router);
 };

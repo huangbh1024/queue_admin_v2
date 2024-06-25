@@ -1,3 +1,4 @@
+import { globalRouter } from '@/routes';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { createDiscreteApi } from 'naive-ui';
 export const getBaseUrl = () => {
@@ -29,6 +30,7 @@ class HttpRequest {
         const { code, message } = res.data;
         if (code === 200) return Promise.resolve(res.data);
         else {
+          if (code === 403) globalRouter?.push({ path: '/login' });
           NMessage.error(message || '服务已断开！');
           return Promise.reject(res);
         }
