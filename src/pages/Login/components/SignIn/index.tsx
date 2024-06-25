@@ -1,5 +1,6 @@
 import { NForm, type FormRules, type FormInst, NFormItem, NInput, NCheckbox, NButton, useNotification } from 'naive-ui';
 import { useAuthStore } from '@/stores/modules/auth.store';
+import { useDictStore } from '@/stores/modules/dict.store';
 
 export const SignIn = defineComponent({
   setup() {
@@ -7,6 +8,7 @@ export const SignIn = defineComponent({
     const router = useRouter();
     const route = useRoute();
     const notification = useNotification();
+    const { queryAllDict } = useDictStore();
 
     const rules = reactive<FormRules>({
       account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
@@ -24,6 +26,7 @@ export const SignIn = defineComponent({
         const { redirect } = route.query;
         router.push({ path: (redirect as string) ?? '/dashboard' });
         notification.success({ title: '温馨提醒', content: '登录成功', duration: 3000 });
+        queryAllDict();
       });
     };
 
