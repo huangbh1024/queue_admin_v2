@@ -13,6 +13,8 @@
   "dependencies": {
     "@unocss/reset": "^0.60.4",
     "@vueuse/core": "^10.10.1",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-vue": "^5.1.12",
     "axios": "^1.7.2",
     "highlight-words-core": "^1.2.2",
     "lodash-es": "^4.17.21",
