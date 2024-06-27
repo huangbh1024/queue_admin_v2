@@ -2,8 +2,10 @@ import { globalRouter } from '@/routes';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { createDiscreteApi } from 'naive-ui';
 export const getBaseUrl = () => {
-  if (import.meta.env.MODE === 'development') return 'http://192.168.96.109:9800/qcs/';
-  if (import.meta.env.MODE === 'production') return `http://192.168.96.109:9800/qcs/`;
+  const protocol = window.location.protocol;
+  const hostname = window.location.hostname;
+  if (import.meta.env.MODE === 'development') return import.meta.env.VITE_REQUEST_BASEURL + ':9800/qcs/';
+  if (import.meta.env.MODE === 'production') return `${protocol}//${hostname}:9800/qcs/`;
   return '';
 };
 

@@ -17,7 +17,13 @@ export const usePublicStore = defineStore(
       const { data } = await querySysRoleList({});
       roleList.value = data;
     };
-    return { queryAllDict, dictAll, queryRoleList, roleList };
+    const uploadBaseURL = computed(() => {
+      const protocol = window.location.protocol;
+      const hostname = window.location.hostname;
+      const domain = import.meta.env.PROD ? protocol + '//' + hostname : import.meta.env.VITE_REQUEST_BASEURL;
+      return domain + ':9800/qcs/';
+    });
+    return { queryAllDict, dictAll, queryRoleList, roleList, uploadBaseURL };
   },
   { persist: { storage: sessionStorage, key: '__PUBLIC_STORE__', paths: ['dictAll', 'roleList'] } },
 );
