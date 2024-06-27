@@ -9,6 +9,7 @@ export const SignIn = defineComponent({
     const route = useRoute();
     const notification = useNotification();
     const { queryAllDict, queryRoleList } = usePublicStore();
+    const loading = ref(false);
 
     const rules = reactive<FormRules>({
       account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
@@ -21,9 +22,11 @@ export const SignIn = defineComponent({
     const onSubmit = () => {
       formRef.value?.validate(async error => {
         if (error?.length) return;
+        loading.value = true;
         cacheSignInInfo();
         await loginMethod({ userName: model.account, userPassword: model.password });
         const { redirect } = route.query;
+        loading.value = false;
         router.push({ path: (redirect as string) ?? '/dashboard' });
         notification.success({ title: '温馨提醒', content: '登录成功', duration: 3000 });
         Promise.all([queryAllDict(), queryRoleList()]);
@@ -59,7 +62,7 @@ export const SignIn = defineComponent({
             </NCheckbox>
           </div>
           <div class='w-full'>
-            <NButton type='primary' class='w-full' size='large' onClick={onSubmit}>
+            <NButton type='primary' class='w-full' size='large' onClick={onSubmit} loading={loading.value}>
               登录
             </NButton>
           </div>
