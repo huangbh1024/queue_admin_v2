@@ -7,14 +7,14 @@ import {
 import { DictValueTag } from '@/components/DictValueTag';
 import { FormOption } from '@/components/ProForm/interface';
 import { Column, ProTableIns } from '@/components/ProTable/interface';
-import { useFormModal } from '@/composables/useFormModal';
-import { useDictStore } from '@/stores/modules/dict.store';
+import { useFormDrawer } from '@/composables/useFormDrawer';
+import { usePublicStore } from '@/stores/modules/public.store';
 import { IWaitAreaTemplate } from '@/types/modules/hosInfo';
 import { NSpace, NButton, useMessage, useDialog, NAlert, NTable } from 'naive-ui';
 
 export const useConfig = () => {
-  const { formIns, showModal, modalTitle, onAdd, onEdit } = useFormModal<IWaitAreaTemplate>();
-  const { dictAll } = storeToRefs(useDictStore());
+  const { formIns, visible, title, onAdd, onEdit, onClose } = useFormDrawer<IWaitAreaTemplate>();
+  const { dictAll } = storeToRefs(usePublicStore());
   const message = useMessage();
   const dialog = useDialog();
   const tableIns = ref<ProTableIns<IWaitAreaTemplate> | null>(null);
@@ -176,9 +176,9 @@ export const useConfig = () => {
       const api = formData.id ? updateWaitAreaTemplateRuleInfo : saveWaitAreaTemplateRuleInfo;
       await api(formData);
       message.success('保存成功');
-      showModal.value = false;
+      onClose();
       tableIns.value?.refresh();
     });
   };
-  return { columns, onAdd, showModal, modalTitle, formOptions, formIns, tableIns, onConfirm };
+  return { columns, onAdd, visible, title, formOptions, formIns, tableIns, onConfirm, onClose };
 };

@@ -1,5 +1,5 @@
 import { PageWrapper } from '@/components/PageWrapper';
-import { NButton, NCard, NSpace, NModal } from 'naive-ui';
+import { NButton, NSpace, NDrawer, NDrawerContent } from 'naive-ui';
 import { queryWaitQueueInfo } from '@/apis/hosInfo/waitArea.api';
 import { ProTable } from '@/components/ProTable';
 import { ProForm } from '@/components/ProForm';
@@ -8,8 +8,8 @@ export const WaitAreaPage = defineComponent({
   setup() {
     const {
       tableColumns,
-      showModal,
-      modalTitle,
+      visible,
+      title,
       onAdd,
       formOptions,
       formIns,
@@ -19,6 +19,7 @@ export const WaitAreaPage = defineComponent({
       onConfirm,
       getSoiIntercomReceptionList,
       getWaitAreaTemplateList,
+      onClose,
     } = useConfig();
 
     getSoiIntercomReceptionList();
@@ -33,13 +34,13 @@ export const WaitAreaPage = defineComponent({
           onBatchDelete={onBatchDelete}
           ref={tableIns}
         />
-        <NModal v-model:show={showModal.value}>
-          <NCard title={modalTitle.value} class='w-auto' closable onClose={() => (showModal.value = false)}>
+        <NDrawer placement='right' v-model:show={visible.value} width='auto'>
+          <NDrawerContent title={title.value} closable nativeScrollbar={false}>
             {{
               footer: () => (
                 <>
                   <NSpace justify='end'>
-                    <NButton onClick={() => (showModal.value = false)}>取消</NButton>
+                    <NButton onClick={onClose}>取消</NButton>
                     <NButton type='primary' onClick={onConfirm}>
                       确认
                     </NButton>
@@ -48,8 +49,8 @@ export const WaitAreaPage = defineComponent({
               ),
               default: () => <ProForm formOptions={formOptions.value} ref={formIns} rules={formRules} />,
             }}
-          </NCard>
-        </NModal>
+          </NDrawerContent>
+        </NDrawer>
       </PageWrapper>
     );
   },

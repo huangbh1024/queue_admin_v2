@@ -4,16 +4,16 @@ import { querySoiIntercomReceptionList } from '@/apis/intercom/intercomTriageSta
 import { DictValueTag } from '@/components/DictValueTag';
 import { FormOption } from '@/components/ProForm/interface';
 import { Column, ProTableIns } from '@/components/ProTable/interface';
-import { useFormModal } from '@/composables/useFormModal';
-import { useDictStore } from '@/stores/modules/dict.store';
+import { useFormDrawer } from '@/composables/useFormDrawer';
+import { usePublicStore } from '@/stores/modules/public.store';
 import { IWaitArea, IWaitAreaTemplate } from '@/types/modules/hosInfo';
 import { ISoiIntercomReception } from '@/types/modules/intercom';
 import { FormRules, NButton, NSpace, useDialog, useMessage } from 'naive-ui';
 import { pinyin } from 'pinyin-pro';
 
 export const useConfig = () => {
-  const { showModal, modalTitle, onAdd, onEdit, formIns } = useFormModal<Partial<IWaitArea>>();
-  const { dictAll } = storeToRefs(useDictStore());
+  const { visible, title, onAdd, onEdit, formIns, onClose } = useFormDrawer<Partial<IWaitArea>>();
+  const { dictAll } = storeToRefs(usePublicStore());
   const tableIns = ref<ProTableIns<IWaitArea> | null>(null);
   const dialog = useDialog();
   const message = useMessage();
@@ -180,16 +180,16 @@ export const useConfig = () => {
       const api = formData.id ? updateWaitQueueInfo : addWaitAreaInfo;
       await api(formData);
       message.success('保存成功');
-      showModal.value = false;
+      onClose();
       tableIns.value?.refresh();
     });
   };
 
   return {
     tableColumns,
-    showModal,
+    visible,
     onAdd,
-    modalTitle,
+    title,
     formOptions,
     formIns,
     onBatchDelete,
@@ -198,5 +198,6 @@ export const useConfig = () => {
     onConfirm,
     getSoiIntercomReceptionList,
     getWaitAreaTemplateList,
+    onClose,
   };
 };
