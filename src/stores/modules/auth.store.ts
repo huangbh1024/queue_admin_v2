@@ -17,6 +17,7 @@ export const useAuthStore = defineStore(
       sessionStorage.setItem('token', data.token); // 缓存token
       await queryMenu(data.id);
       userInfo.value = data;
+      userInfo.value.roleIdList = data.roleList.map(item => item.id);
     };
 
     const logoutMethod = () => {

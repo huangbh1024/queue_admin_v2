@@ -3,7 +3,7 @@ import { RouteRecordRaw, RouterLink, useRoute } from 'vue-router';
 import { renderIcon } from '@/components/Icon/utils';
 import { useMenuStore } from '@/stores/modules/menu.store';
 import type { MenuMixedOption } from 'naive-ui/es/menu/src/interface';
-import { isUndefined } from 'lodash-es';
+import { isUndefined, isBoolean } from 'lodash-es';
 
 export interface SidebarMenuProps {
   collapsed?: boolean;
@@ -29,6 +29,7 @@ export const SidebarMenu = defineComponent({
       item.children?.length && (isUndefined(item.meta?.hasChildren) || item.meta?.hasChildren);
     // 处理树形菜单
     const mapTreeStructure = (item: RouteRecordRaw, level: number): MenuMixedOption => {
+      const hidden = item.meta?.hidden;
       return {
         label: () => {
           if (showChildren(item)) {
@@ -38,6 +39,7 @@ export const SidebarMenu = defineComponent({
             <RouterLink to={getRoutePath(item.path, level)}>{{ default: () => item.meta?.title ?? '' }}</RouterLink>
           );
         },
+        show: isUndefined(hidden) || (isBoolean(hidden) && !hidden),
         key: getRoutePath(item.path, level),
         collapseTitle: item.meta?.title ?? '',
         icon: item.meta?.icon ? renderIcon(item.meta.icon) : undefined,

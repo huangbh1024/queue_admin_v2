@@ -46,3 +46,26 @@ export interface IWaitAreaTemplateUsage {
   }[];
   pageUrl: string;
 }
+
+export interface IHosInfo {
+  bedNum: number;
+  createTime: string;
+  createUser: string;
+  deviceNumLicense: string;
+  dmidecodeUUID: string;
+  hospitalAddress: string;
+  hospitalExpiryDate: string;
+  hospitalLevel: string;
+  hospitalLogoPic: string;
+  hospitalName: string;
+  hospitalNote: string;
+  hospitalTelephone: string;
+  id: number;
+  license: string;
+  moduleLicense: string;
+  orgCode: string;
+  projectCode: string;
+  remark: string;
+  updateTime: string;
+  updateUser: string;
+}

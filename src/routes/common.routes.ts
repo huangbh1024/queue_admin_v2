@@ -2,6 +2,7 @@
 import { RouteRecordRaw } from 'vue-router';
 import { DashboardPage } from '@/pages/Dashboard';
 import { DefaultLayout } from '@/layouts/default';
+import { ProfilePage } from '@/pages/Profile';
 
 export const commonRoutes: RouteRecordRaw[] = [
   {
@@ -16,5 +17,12 @@ export const commonRoutes: RouteRecordRaw[] = [
         component: () => Promise.resolve(DashboardPage),
       },
     ],
+  },
+  {
+    name: 'Profile',
+    path: '/profile',
+    component: () => Promise.resolve(DefaultLayout),
+    meta: { title: '个人中心', hidden: true },
+    children: [{ name: 'ProfileIndex', path: '', component: () => Promise.resolve(ProfilePage) }],
   },
 ];

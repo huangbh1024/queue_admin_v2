@@ -11,7 +11,7 @@ export type FormOption<T extends Record<string, any> = object> = {
     type?: K;
     props?: TypeToPropsMap[K] & { class?: string };
     render?: (rowData: T) => JSX.Element;
-    path: keyof T;
+    path?: keyof T;
   };
 }[keyof TypeToPropsMap] &
   FormItemGiProps;
