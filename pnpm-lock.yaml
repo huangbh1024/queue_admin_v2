@@ -118,6 +118,9 @@ devDependencies:
   vite:
     specifier: ^5.2.0
     version: 5.3.1(@types/node@20.14.9)(sass@1.77.6)
+  vite-plugin-build-flow:
+    specifier: ^1.0.2
+    version: 1.0.2(vite@5.3.1)
   vue-tsc:
     specifier: ^2.0.6
     version: 2.0.22(typescript@5.5.2)
@@ -5150,6 +5153,14 @@ packages:
       evtd: 0.2.4
       vue: 3.4.30(typescript@5.5.2)
     dev: false
+
+  /vite-plugin-build-flow@1.0.2(vite@5.3.1):
+    resolution: {integrity: sha512-ALDJg91+Fq6zl3/zRSCO7N1dlHsQfnIqkqU6LmiNhdwT87e17t8DsizfuyDgsvLYMKPHrwV9vRtvKbtbrixRkA==}
+    peerDependencies:
+      vite: '>=2.0.0'
+    dependencies:
+      vite: 5.3.1(@types/node@20.14.9)(sass@1.77.6)
+    dev: true
 
   /vite@5.3.1(@types/node@20.14.9)(sass@1.77.6):
     resolution: {integrity: sha512-XBmSKRLXLxiaPYamLv3/hnP/KXDai1NDexN0FpkTaZXTfycHvkRHoenpgl/fvuK/kPbB6xAgoyiryAhQNxYmAQ==}
