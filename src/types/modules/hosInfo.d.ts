@@ -69,3 +69,19 @@ export interface IHosInfo {
   updateTime: string;
   updateUser: string;
 }
+
+export interface IRegional {
+  areaCode: string;
+  areaLevelType: string;
+  areaName: string;
+  children: IRegional[];
+  createTime: string;
+  createUser: string;
+  id: number;
+  isEnable: string;
+  parentId: number;
+  remark: string;
+  sort: string | number; // 后端是string,string组件会警告,所以改成number
+  updateTime: string;
+  updateUser: string;
+}

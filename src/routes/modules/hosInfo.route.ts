@@ -1,6 +1,7 @@
 import { DefaultLayout } from '@/layouts/default';
 import { HosInfoManagePage } from '@/pages/HosInfo/HosInfoManage';
 import { WaitAreaManageRouteView } from '@/pages/HosInfo/WaitAreaManage';
+import { RegionalManagePage } from '@/pages/HosInfo/RegionalManage';
 import { WaitAreaPage } from '@/pages/HosInfo/WaitAreaManage/pages/WaitArea';
 import { WaitAreaTemplatePage } from '@/pages/HosInfo/WaitAreaManage/pages/WaitAreaTemplate';
 import { RouteRecordRaw } from 'vue-router';
@@ -36,6 +37,12 @@ export const hosInfoRoute: RouteRecordRaw = {
           meta: { title: '候诊规则模板' },
         },
       ],
+    },
+    {
+      name: 'Regional',
+      path: 'regional',
+      component: () => Promise.resolve(RegionalManagePage),
+      meta: { title: '区域管理' },
     },
   ],
 };

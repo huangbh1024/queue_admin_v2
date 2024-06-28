@@ -4,9 +4,13 @@ export const useFormDrawer = <T extends Record<string, any> = object>() => {
   const visible = ref(false);
   const title = ref<'新增' | '编辑'>('新增');
   const formIns = ref<ProFormIns<Partial<T>> | null>(null);
-  const onAdd = () => {
+  const onAdd = (rowData?: Partial<T>) => {
     visible.value = true;
     title.value = '新增';
+    rowData &&
+      nextTick(() => {
+        formIns.value?.setFormData(Object.assign({}, rowData));
+      });
   };
   const onEdit = (rowData: T) => {
     visible.value = true;
