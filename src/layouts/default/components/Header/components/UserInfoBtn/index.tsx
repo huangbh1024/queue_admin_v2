@@ -1,6 +1,7 @@
 import { ToolTipper } from '@/components/ActionIcon/components/Tooltipper';
 import { Icon } from '@/components/Icon';
 import {
+  FormInst,
   NAlert,
   NAvatar,
   NButton,
@@ -40,6 +41,7 @@ export const UserInfoBtn = defineComponent({
       });
     };
     const hosInfo = ref<IHosInfo>({} as IHosInfo);
+    const formInst = ref<FormInst | null>(null);
     const onClickAuthInfo = async () => {
       const { data } = await queryHospHospitalInfo();
       hosInfo.value = data;
@@ -47,20 +49,20 @@ export const UserInfoBtn = defineComponent({
         dialog.create({
           title: '授权信息',
           content: () => (
-            <NForm labelPlacement='left'>
-              <NFormItem label='组织代码'>
+            <NForm labelPlacement='left' ref={formInst}>
+              <NFormItem label='组织代码' rule={{ message: '请输入组织代码', required: true, trigger: 'blur' }}>
                 <NInput placeholder='请输入组织代码' v-model:value={hosInfo.value.orgCode} />
               </NFormItem>
-              <NFormItem label='产品代码'>
+              <NFormItem label='产品代码' rule={{ message: '请输入产品代码', required: true, trigger: 'blur' }}>
                 <NInput placeholder='请输入产品代码' v-model:value={hosInfo.value.projectCode} />
               </NFormItem>
               <NFormItem label='序列号'>
-                <NAlert type='info'>
+                <NAlert type='info' class='w-full!'>
                   {hosInfo.value.dmidecodeUUID ? hosInfo.value.dmidecodeUUID : '暂未查询到序列号'}
                 </NAlert>
               </NFormItem>
               <NFormItem label='有效期'>
-                <NAlert type='info'>
+                <NAlert type='info' class='w-full!'>
                   {hosInfo.value.hospitalExpiryDate ? hosInfo.value.hospitalExpiryDate : '暂未查询到有效期'}
                 </NAlert>
               </NFormItem>
@@ -71,10 +73,13 @@ export const UserInfoBtn = defineComponent({
           ),
           positiveText: '保存',
           negativeText: '取消',
-          onPositiveClick: async () => {
-            await saveHospHospitalInfo(hosInfo.value);
-            message.success('保存成功');
-            window.location.reload();
+          onPositiveClick: () => {
+            formInst.value?.validate(async error => {
+              if (error) return;
+              await saveHospHospitalInfo(hosInfo.value);
+              message.success('保存成功');
+              window.location.reload();
+            });
           },
           showIcon: false,
         });

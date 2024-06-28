@@ -14,6 +14,7 @@ export const commonRoutes: RouteRecordRaw[] = [
       {
         name: 'DashboardIndex',
         path: '',
+        meta: { title: '主页' },
         component: () => Promise.resolve(DashboardPage),
       },
     ],
@@ -22,7 +23,9 @@ export const commonRoutes: RouteRecordRaw[] = [
     name: 'Profile',
     path: '/profile',
     component: () => Promise.resolve(DefaultLayout),
-    meta: { title: '个人中心', hidden: true },
-    children: [{ name: 'ProfileIndex', path: '', component: () => Promise.resolve(ProfilePage) }],
+    meta: { hidden: true },
+    children: [
+      { name: 'ProfileIndex', path: '', component: () => Promise.resolve(ProfilePage), meta: { title: '个人中心' } },
+    ],
   },
 ];

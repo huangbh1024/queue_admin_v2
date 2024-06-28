@@ -10,11 +10,12 @@ export const SearchDialog = defineComponent({
     const router = useRouter();
 
     // 对roleMenuList进行处理，获取不是别人parent的数据
-    const noParentMenuList = computed(() =>
-      useRouter()
+    const noParentMenuList = computed(() => {
+      const whiteList = ['/login'];
+      return router
         .getRoutes()
-        .filter(item => item.children.length === 0 && item.meta.title),
-    );
+        .filter(item => item.children.length === 0 && item.meta.title && !whiteList.includes(item.path));
+    });
 
     const isDialogVisible = ref(false);
     const SearchIcon = 'tabler:search';

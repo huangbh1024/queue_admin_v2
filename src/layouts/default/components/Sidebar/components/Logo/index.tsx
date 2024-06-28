@@ -1,5 +1,6 @@
 import { Transition } from 'vue';
 import { TransitionConstant } from '@/constants/transition.constant';
+import Logo from '@/assets/imgs/logo.png';
 
 export interface SidebarLogoProps {
   displayTitle?: boolean;
@@ -21,13 +22,7 @@ export const SidebarLogo = defineComponent({
     return () => (
       <div class={[`text-${props.titleSize}`, 'flex', 'items-center', 'h-full']}>
         <Transition name={TransitionConstant.FADE} mode='in-out'>
-          {props.isMini ? (
-            <img
-              class='block h-full max-h-8 m-3'
-              alt='App Logo'
-              src='https://healthcare.dnake-iot.com/cloud-healthcare-iot/assets/logo-D2lkaeBE.png'
-            />
-          ) : null}
+          {props.isMini ? <img class='block h-full max-h-8 m-3' alt='App Logo' src={Logo} /> : null}
         </Transition>
         {props.displayTitle ? <span class='font-semibold'>{applicationName.value}</span> : null}
       </div>
